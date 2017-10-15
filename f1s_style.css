@@ -1,0 +1,182 @@
+/*
+What is this:          This is a CSS stylesheet which accompanies the f1predict WordPress plugin
+Author:                Tim Carey
+Version:               0.2
+*/
+
+table.f1predict {
+	color: #1E2633;
+	border-width: 1px;
+	padding: 1px !important;
+	border-color: #1E2633;
+	border-collapse: collapse;
+}
+
+table.f1predict th {
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	color: #FFFFFF;
+	border-color: #1E2633;
+	background-color: #1EA497;
+}
+
+table.f1predict .dark_span {
+	border-width: 1px;
+	padding: 8px;
+	color: #FFFFFF;
+	border-style: solid;
+	border-color: #1E2633;
+	background-color: #1EA497;
+}
+
+table.f1predict tr  {
+    color: #1E2633;
+	background-color: #1EA497;
+} 
+
+table.f1predict tr:hover td {
+    color: #FFFFFF;
+	background-color: #CA0000;
+}
+
+table.f1predict .highlight td {
+    color: #FFFFFF;
+	background-color: #CA0000;
+}
+
+table.f1predict td {
+	border-width: 1px;
+	padding: 1px;
+	border-style: solid;
+	border-color: #1E2633;
+	background-color: #DDDDDD;
+}
+
+/* CSS for the F1 format scoreboard */
+.lap {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  background-color: rgba(100, 100, 100, 0.5);
+  height: 2rem;
+  line-height: 2rem;
+  margin-bottom: .5rem;
+  padding: 0 .5rem;
+  letter-spacing: .1rem;
+  color: #FFFFFF;
+}
+
+.ranking {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  color: #FFFFFF; /* here's the text colour */
+}
+
+.driver {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 2rem;
+  line-height: 2rem;
+  overflow: hidden;
+}
+
+.driver-position {
+  position: relative;
+  width: 1.5rem;
+  height: inherit;
+  text-align: center;
+  margin-right: 1rem;
+  padding: 0 .5rem;
+  background-color: rgba(100, 100, 100, 0.5);
+}
+.driver-position:after {
+  content: '';
+  position: absolute;
+  right: -1rem;
+  width: 0;
+  height: 0;
+  border-top: 2rem solid rgba(100, 100, 100, 0.5);
+  border-right: 1rem solid transparent;
+}
+
+.driver-color {
+  width: .5rem;
+  height: inherit;
+  -webkit-transform: skew(-27deg);
+          transform: skew(-27deg);
+  margin-left: -.6rem;
+  z-index: 9;
+  background-color: #fff;
+}
+.driver-mercedes .driver-color {
+  background-color: #30CEBA;
+}
+.driver-ferrari .driver-color {
+  background-color: #BF0D12;
+}
+.driver-williams .driver-color {
+  background-color: #FFFFFF;
+}
+.driver-red_bull .driver-color {
+  background-color: #00107B;
+}
+.driver-force_india .driver-color {
+  background-color: #FB84C6;
+}
+.driver-toro_rosso .driver-color {
+  background-color: #002CFB;
+}
+.driver-haas .driver-color {
+  background-color: #6A0405;
+}
+.driver-renault .driver-color {
+  background-color: #FED631;
+}
+.driver-mclaren .driver-color {
+  background-color: #FB7B25;
+}
+.driver-sauber .driver-color {
+  background-color: #0475FB;
+}
+
+.driver-name {
+  position: relative;
+  margin-left: .5rem;
+  padding: 0 .5rem;
+  text-transform: uppercase;
+  width: 2.5rem;
+  height: inherit;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.driver-name:before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  width: 0;
+  height: 0;
+  border-bottom: 2rem solid rgba(0, 0, 0, 0.5);
+  border-left: 1rem solid transparent;
+}
+
+.driver-time {
+  padding: 0 .5rem;
+  width: 6rem;
+  height: inherit;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: right;
+}
+
