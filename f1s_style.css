@@ -5,10 +5,10 @@ Version:               0.2
 */
 
 table.f1predict {
-	color: #1E2633;
+	color: #182e3a;
 	border-width: 1px;
-	padding: 1px !important;
-	border-color: #1E2633;
+	padding: 8px !important;
+	border-color: #182e3a;
 	border-collapse: collapse;
 }
 
@@ -17,40 +17,41 @@ table.f1predict th {
 	padding: 8px;
 	border-style: solid;
 	color: #FFFFFF;
-	border-color: #1E2633;
-	background-color: #1EA497;
+	border-color: #182e3a;
+	background-color: #182e3a;
 }
 
 table.f1predict .dark_span {
 	border-width: 1px;
 	padding: 8px;
-	color: #FFFFFF;
+	color: #182e3a;
 	border-style: solid;
-	border-color: #1E2633;
-	background-color: #1EA497;
+	border-color: #182e3a;
+	background-color: #b9e0f7;
 }
 
 table.f1predict tr  {
-    color: #1E2633;
-	background-color: #1EA497;
+    color: #182e3a;
+    padding: 8px;
+	background-color: #b9e0f7;
 } 
 
 table.f1predict tr:hover td {
-    color: #FFFFFF;
-	background-color: #CA0000;
+    color: #182e3a;
+	background-color: #f58426;
 }
 
 table.f1predict .highlight td {
-    color: #FFFFFF;
-	background-color: #CA0000;
+    color: #182e3a;
+	background-color: #ef4423;
 }
 
 table.f1predict td {
 	border-width: 1px;
-	padding: 1px;
+	padding: 8px;
 	border-style: solid;
-	border-color: #1E2633;
-	background-color: #DDDDDD;
+	border-color: #182e3a;
+	background-color: #ffffff;
 }
 
 /* CSS for the F1 format scoreboard */

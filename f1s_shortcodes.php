@@ -2,7 +2,7 @@
 /*
 What is this:          These are the shortcodes included with the f1predict WordPress plugin
 Author:                Tim Carey
-Version:               0.2
+Version:               0.3
 
 Functions held within this file:
 --------------------------------
@@ -13,6 +13,7 @@ Functions held within this file:
 5) f1s_results_predictions - a shortcode to return race results and player predictions for a given race
 6) f1s_season_progression - a shortcode to return a chart showing points progression between two races
 7) f1s_scoreboard - a shortcode to test scoreboard setup
+8) f1s_competition_treemap - a shortcode to create a Google Treemap for a given season
 --------------------------------
 */
 
@@ -24,6 +25,7 @@ add_shortcode('f1s_season_source', 'f1s_season_source');
 add_shortcode('f1s_results_predictions', 'f1s_results_predictions');
 add_shortcode('f1s_season_progression', 'f1s_season_progression');
 add_shortcode('f1s_scoreboard', 'f1s_scoreboard');
+add_shortcode('f1s_competition_treemap', 'f1s_competition_treemap');
 
 //require (plugin_dir_path(__FILE__) . 'f1s_functions.php');
 
@@ -122,17 +124,19 @@ function f1s_season($atts, $content = null) {
 // 3) f1s_race_source
 function f1s_race_source($atts, $content = null) {
     $atts = shortcode_atts(
-    	array(
-    		'race_id' => '1'
-    	), $atts
+        array(
+            'race_id' => '1',
+            'display' => 'both'
+        ), $atts
     );
     $race_id = $atts['race_id'];
+    $display = $atts['display'];
 
     // query from the database
     global $wpdb;
     $results = $wpdb->get_results ( "
-        SELECT 	f1pc_motorracingleague_entry.player_name AS Player,
-    		f1pc_motorracingleague_entry.race_id AS Race,
+        SELECT  f1pc_motorracingleague_entry.player_name AS Player,
+            f1pc_motorracingleague_entry.race_id AS Race,
             f1pc_motorracingleague_entry.points_breakdown AS Points
         FROM f1pc_motorracingleague_entry
         WHERE f1pc_motorracingleague_entry.race_id = '$race_id'
@@ -183,7 +187,17 @@ function f1s_race_source($atts, $content = null) {
     $chart = f1s_gchart_stackbar($output, 'race_source');
 
     // return the table and the chart
-    return $html . $chart;
+    switch ($display) {
+        case 'table':
+            return $html;
+            break;
+        case 'graph':
+            return $chart;
+            break;
+        case 'both':
+            return $html . $chart;
+            break;
+    }
 }
 
 
@@ -376,6 +390,7 @@ function f1s_season_progression($atts, $content = null) {
     JOIN f1pc_motorracingleague_race ON f1pc_motorracingleague_entry.race_id=f1pc_motorracingleague_race.id
     WHERE f1pc_motorracingleague_entry.race_id >= '$start_race'
     AND f1pc_motorracingleague_entry.race_id <= '$end_race'
+    AND f1pc_motorracingleague_entry.points > 0
     ORDER BY f1pc_motorracingleague_entry.race_id, f1pc_motorracingleague_entry.player_name
     " ) or die ('Call Tim & tell him I couldn\'t return the results query');
 
@@ -389,7 +404,7 @@ function f1s_season_progression($atts, $content = null) {
         }
     }
 
-    // make an array of races, shortened to the first three characters
+    // make an array of races
     $races_arr = array();
     $i = 0;
     foreach($results as $val) {
@@ -476,7 +491,7 @@ function f1s_season_progression($atts, $content = null) {
         var options = {
             fontName: 'Ubuntu Condensed',
             height: '600',
-            backgroundColor: '#dddddd',
+            backgroundColor: '#ffffff',
             animation: {duration: '900', startup: 'true', easing: 'in'}
         };
 
@@ -492,5 +507,77 @@ function f1s_season_progression($atts, $content = null) {
     return $chart;
 }
 
+function f1s_competition_treemap($atts, $content = null) {
+    $atts = shortcode_atts(
+        array(
+            'season' => '2017'
+        ), $atts
+    );
+    $input_1 = $atts['season'];
+
+    // get the results from the database
+    $results = f1s_results_01($input_1);
+
+    // make an array of races
+    $races_arr = array();
+    $i = 0;
+    foreach($results as $val) {
+        if(!in_array($val['Race'], $races_arr)) {
+            $races_arr[$i] = $val['Race'];
+            $i++;
+        }   
+    }
+
+    // make an array of players
+    $player_arr = array();
+    $i = 0;
+    foreach($results as $val) {
+        if(!in_array($val['Player'], $player_arr)) {
+            $player_arr[$i] = $val['Player'];
+            $i++;
+        }   
+    }
+
+    // write the array for the treemap
+    $treemap = array();
+    $treemap[0][0] = $input_1;
+    $treemap[0][1] = 'null';
+    $treemap[0][2] = '0';
+
+    $i=0 + count($treemap);
+    foreach($player_arr as $var) {
+        $treemap[$i][0] = $var;
+        $treemap[$i][1] = $input_1;
+        $treemap[$i][2] = '0';
+        $i++;
+    }
+
+    $i=0 + count($treemap);
+    foreach($results as $var) {
+        $treemap[$i][0] = $var['Race'] . " - " . $var['Player'] . " (" . $var['Total'] . ")";
+        $treemap[$i][1] = $var['Player'];
+        $treemap[$i][2] = $var['Total'];    
+        $i++;
+    }
+
+    $i=0 + count($treemap);
+    foreach($results as $var) {
+        $treemap[$i][0] = $var['Race'] . " - " . $var['Player'] . " - Pole (" . $var['Pole'] . ")";
+        $treemap[$i][1] = $var['Race'] . " - " . $var['Player'] . " (" . $var['Total'] . ")";
+        $treemap[$i][2] = $var['Pole'];    
+        $i++;
+        $treemap[$i][0] = $var['Race'] . " - " . $var['Player'] . " - Top 8 (" . $var['Top8'] . ")";
+        $treemap[$i][1] = $var['Race'] . " - " . $var['Player'] . " (" . $var['Total'] . ")";
+        $treemap[$i][2] = $var['Top8'];    
+        $i++;
+        $treemap[$i][0] = $var['Race'] . " - " . $var['Player'] . " - Position (" . $var['Position'] . ")";
+        $treemap[$i][1] = $var['Race'] . " - " . $var['Player'] . " (" . $var['Total'] . ")";
+        $treemap[$i][2] = $var['Position'];    
+        $i++;
+    }
+
+    $html = f1s_treemap_01($treemap,$input_1);
+    return($html);
+}
 
 ?>

@@ -2,13 +2,14 @@
 /*
 What is this:          These are the shared functions included with the f1predict WordPress plugin
 Author:                Tim Carey
-Version:               0.2
+Version:               0.3
 
 Functions held within this file:
 --------------------------------
 1) f1s_unique_multidim_array - http://php.net/manual/en/function.array-unique.php
 2) f1s_gchart_racesource - makes a google chart showing race points source
 3) f1s_gchart_champsource - makes a google chart showing championship points source
+4) f1s_results_01 - returns all race results for a given season
 */
 
 // A function to load my style sheet
@@ -65,12 +66,12 @@ function f1s_gchart_stackbar($array, $chartname) {
 	    ]);
 
 	    var options = {
-	    	fontName: 'Open Sans',
+	    	fontName: 'Ubuntu Condensed',
 	        height: 400,
 	        isStacked: 'true',
-	        backgroundColor: '#dddddd',
+	        backgroundColor: '#ffffff',
 	        bars: 'horizontal',
-	        colors: '#19877C'
+	        colors: '#F58426'
 	    };
 
 		var chart = new google.charts.Bar(document.getElementById('" . $chartname . "'));
@@ -101,6 +102,39 @@ function sortBySubValue($array, $value, $asc = true, $preserveKeys = false)
         });
     }
     return $array;
+}
+
+// f1s_results_01 - returns all race results for a given season
+function f1s_results_01($season) {
+// query from the database
+global $wpdb;
+$results = $wpdb->get_results ( "
+    SELECT  
+      f1pc_motorracingleague_entry.player_name AS Player,
+      f1pc_motorracingleague_entry.race_id AS Race,
+      f1pc_motorracingleague_race.circuit AS 'RaceName',
+      f1pc_motorracingleague_entry.points_breakdown AS Points
+    FROM f1pc_motorracingleague_entry
+    JOIN f1pc_motorracingleague_race ON f1pc_motorracingleague_entry.race_id=f1pc_motorracingleague_race.id
+    JOIN f1pc_motorracingleague_championship ON f1pc_motorracingleague_race.championship_id = f1pc_motorracingleague_championship.id
+    WHERE f1pc_motorracingleague_championship.season = '$season'
+    AND f1pc_motorracingleague_entry.points > 0
+" );
+
+// cycle into an array and calculate points gained from exact position matches
+$output = array();
+$i = 0;
+foreach( $results as $result ) {
+    $result->Points = unserialize($result->Points);
+    $output[$i]['Player'] = $result->Player;
+    $output[$i]['Race'] = $result->RaceName;
+    $output[$i]['Pole'] = 0 + $result->Points[0];
+    $output[$i]['Top8'] = 0 + $result->Points['bonus'];
+    $output[$i]['Position'] = 0 + ($result->Points['total'] - ($result->Points['bonus'] + $result->Points[0]));
+    $output[$i]['Total'] = 0 + $result->Points['total'];
+    $i++;
+    }
+return $output;
 }
 
 ?>

@@ -5,7 +5,7 @@ Plugin URI: http://timcarey.net
 Description: Displays statistics from the Motor Racing League plugin, using the Ergast API
 Author: Tim Carey
 Author URI: http://timcarey.net
-Version: 0.2
+Version: 0.3
 
 Shortcodes in this plugin:
 --------------------------------
